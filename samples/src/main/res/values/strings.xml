@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">UtilsDemo</string>
+    <string name="android_os_label">系统信息帮助类</string>
+    <string name="cpu_info_label">CPU信息帮助类</string>
+    <string name="application_label">应用信息帮助类</string>
+    <string name="localfile_label">应用包内数据读取帮助类</string>
+    <string name="screen_label">屏幕信息帮助类</string>
+</resources>
