@@ -25,7 +25,7 @@
         <activity android:name=".activity.LocalFileActivity"
             android:label="@string/localfile_label"/>
         <activity android:name=".activity.ScreenActivity"
-            android:label="@string/localfile_label"/>
+            android:label="@string/screen_label"/>
     </application>
 
 </manifest>

@@ -35,8 +35,8 @@ public class BaseActivity extends AppCompatActivity {
      */
     protected void addInfo(String info) {
         LayoutInflater inflater = LayoutInflater.from(this);
-        RelativeLayout layout = (RelativeLayout) inflater.inflate(R.layout.item_function, null);
-        TextView infoTextView = (TextView) layout.findViewById(R.id.function_item_text);
+        RelativeLayout layout = (RelativeLayout) inflater.inflate(R.layout.item_info, null);
+        TextView infoTextView = (TextView) layout.findViewById(R.id.info_item_text);
         infoTextView.setText(info);
         linearLayoutContent.addView(layout);
     }

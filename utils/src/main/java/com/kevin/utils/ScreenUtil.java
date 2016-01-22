@@ -7,6 +7,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.os.Build;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
@@ -25,73 +26,196 @@ import android.view.WindowManager;
  * @author mender，Modified Date Modify Content:
  */
 public class ScreenUtil {
-	
-	/** 上下文 */
-	private static Context mContext = null;
+
     /** 基准分辨率的宽 */
 	private double STANDARD_SCREEN_WIDTH  = 320;
     /** 基准分辨率的高 */
     protected double STANDARD_SCREEN_HEIGHT = 480;
-	
-	// 单例模式
-	private static ScreenUtil SingleInstance = null;
-	private ScreenUtil() {}
-	public static ScreenUtil getInstance(Context context) {
-		if (context instanceof Activity) {
-			mContext = context;
-		} else {
-			throw new IllegalArgumentException("context must be instanceof Activity");
-		}
-		if(SingleInstance == null) {
-			SingleInstance = new ScreenUtil();
-		}
-		return SingleInstance;
-	}
-	
+
     /**
-     * 获取屏幕宽度
-     * @return
+     * 获取屏幕可操作区域宽度
+     *
+     * @param activity
+     * @return 屏幕可操作区域宽度
      */
-    public double getScreenWidth() {
-	    DisplayMetrics displayMetrics = new DisplayMetrics();
-	    ((Activity) mContext).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-    	return displayMetrics.widthPixels;
-    }
-	
-    /**
-     * 获取屏幕高度
-     * @return
-     */
-    public double getScreenHeight() {
-	    DisplayMetrics displayMetrics = new DisplayMetrics();
-	    ((Activity) mContext).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-    	return displayMetrics.heightPixels;
+    public static int getScreenWidth(Activity activity) {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        return displayMetrics.widthPixels;
     }
 
     /**
-     * 计算屏幕宽度比例  (Mi3测试 3.375 )
-     * @return
+     * 获取屏幕可操作区域高度
+     *
+     * @param activity
+     * @return 屏幕可操作区域高度
      */
-    public double getWidthRatio() {
-    	return getScreenWidth() / STANDARD_SCREEN_WIDTH;
+    public static int getScreenHeight(Activity activity) {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        return displayMetrics.heightPixels;
     }
-    
+
     /**
-     * 计算屏幕高度比例  (Mi3测试 4.0 )
+     * 获取屏幕可操作区域宽度和高度
+     *
+     * @param activity
+     * @return 宽度和高度封装到Point对象中
+     */
+    public static Point getScreenSize(Activity activity) {
+        return new Point(getScreenWidth(activity), getScreenHeight(activity));
+    }
+
+
+    /**
+     * 获取屏幕真实宽度<br/>
+     * 其实和 getScreenWidth()获取的值相同，相对getRealHeight()增加
+     *
+     * @param activity
+     * @return 屏幕真实宽度
+     */
+    public static int getRealWidth(Activity activity) {
+        int widthPixels = 0;
+        Display display = activity.getWindowManager().getDefaultDisplay();
+        final int VERSION = Build.VERSION.SDK_INT;
+
+        if(VERSION < 13) {
+            display.getWidth();
+        }else if (VERSION == 13) {
+            try {
+                widthPixels = (Integer) Display.class.getMethod("getRawWidth").invoke(display);
+            } catch (Exception e) {
+            }
+        } else {
+            Point realSize = new Point();
+            try {
+                Display.class.getMethod("getRealSize", Point.class).invoke(display, realSize);
+                widthPixels = realSize.x;
+            } catch (Exception e) {
+            }
+        }
+        return widthPixels;
+    }
+
+    /**
+     * 获取屏幕真实高度
+     *
+     * @param activity
+     * @return 屏幕真实高度
+     */
+    public static int getRealHeight(Activity activity) {
+        int heightPixels = 0;
+        Display display = activity.getWindowManager().getDefaultDisplay();
+        final int VERSION = Build.VERSION.SDK_INT;
+
+        if(VERSION < 13) {
+            display.getHeight();
+        }else if (VERSION == 13) {
+            try {
+                heightPixels = (Integer) Display.class.getMethod("getRawHeight").invoke(display);
+            } catch (Exception e) {
+            }
+        } else {
+            Point realSize = new Point();
+            try {
+                Display.class.getMethod("getRealSize", Point.class).invoke(display, realSize);
+                heightPixels = realSize.y;
+            } catch (Exception e) {
+            }
+        }
+        return heightPixels;
+    }
+
+    /**
+     * 获取屏幕真实宽度和高度
+     *
+     * @param activity
+     * @return 宽度和高度封装到Point对象中
+     */
+    public static Point getRealSize(Activity activity) {
+        return new Point(getRealWidth(activity), getRealHeight(activity));
+    }
+
+    /**
+     * 获取屏幕宽度ppi
+     *
+     * @param activity
+     * @return 屏幕宽度ppi
+     */
+    public static float getWidthPpi(Activity activity) {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        return displayMetrics.xdpi;
+    }
+
+    /**
+     * 获取屏幕高度ppi
+     *
+     * @param activity
+     * @return 屏幕高度ppi
+     */
+    public static float getHeightPpi(Activity activity) {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        return displayMetrics.ydpi;
+    }
+
+    /**
+     * 获取屏幕ppi
+     *
+     * @param activity
+     * @return 屏幕高度ppi
+     */
+    public static float getScreenPpi(Activity activity) {
+        return (getWidthPpi(activity) + getHeightPpi(activity)) / 2;
+    }
+
+    /**
+     * 获取屏幕宽度物理尺寸
+     *
+     * @param activity
      * @return
      */
-    public double getHeightRatio() {
-    	return getScreenHeight() / STANDARD_SCREEN_HEIGHT;
+    public static float getWidthInch(Activity activity) {
+        int realWidth = getRealWidth(activity);
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        return (float)realWidth / getWidthPpi(activity);
     }
+
+    /**
+     * 获取屏幕高度物理尺寸
+     *
+     * @param activity
+     * @return
+     */
+    public static float getHeightInch(Activity activity) {
+        int realHeight = getRealHeight(activity);
+        return (float)realHeight / getHeightPpi(activity);
+    }
+
+    /**
+     * 获取屏幕物理尺寸
+     *
+     * @param activity
+     * @return 屏幕物理尺寸
+     */
+    public static float getScreenInch(Activity activity) {
+        return (float)Math.sqrt(Math.pow(getWidthInch(activity), 2) + Math.pow(getHeightInch(activity), 2));
+    }
+
+
+
+
 
     /**
      * 获取屏幕密度
      *
      * @return
      */
-    public float getScreenDensity() {
+    public float getScreenDensity(Activity activity) {
         DisplayMetrics displayMetrics = new DisplayMetrics();
-        ((Activity) mContext).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         return displayMetrics.density;
     }
 
@@ -100,9 +224,9 @@ public class ScreenUtil {
      *
      * @return
      */
-    public float getDensityDpi() {
+    public float getDensityDpi(Activity activity) {
         DisplayMetrics displayMetrics = new DisplayMetrics();
-        ((Activity) mContext).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         return displayMetrics.densityDpi;
     }
     
@@ -111,7 +235,7 @@ public class ScreenUtil {
      *
      * @return
      */
-    public int getStatusBarHeight() {
+    public int getStatusBarHeight(Activity activity) {
         Class<?> c = null;
         Object obj = null;
         Field field = null;
@@ -121,7 +245,7 @@ public class ScreenUtil {
             obj = c.newInstance();
             field = c.getField("status_bar_height");
             x = Integer.parseInt(field.get(obj).toString());
-            statusBarHeight = mContext.getResources().getDimensionPixelSize(x);
+            statusBarHeight = activity.getResources().getDimensionPixelSize(x);
         } catch (Exception e1) {
             e1.printStackTrace();
         } 
@@ -133,13 +257,13 @@ public class ScreenUtil {
      *
      * @return 
      */  
-    public Bitmap snapShotWithStatusBar() {  
-        View view = ((Activity) mContext).getWindow().getDecorView();  
+    public Bitmap snapShotWithStatusBar(Activity activity) {
+        View view = activity.getWindow().getDecorView();
         view.setDrawingCacheEnabled(true);  
         view.buildDrawingCache();
         Bitmap bmp = view.getDrawingCache();
-        int width = (int) getScreenWidth();
-        int height = (int) getScreenHeight();
+        int width = getScreenWidth(activity);
+        int height = getScreenHeight(activity);
         Bitmap bp = null;
         bp = Bitmap.createBitmap(bmp, 0, 0, width, height);  
         view.destroyDrawingCache();  
@@ -151,17 +275,17 @@ public class ScreenUtil {
      *
      * @return 
      */  
-    public Bitmap snapShotWithoutStatusBar() {  
-        View view = ((Activity) mContext).getWindow().getDecorView();
+    public Bitmap snapShotWithoutStatusBar(Activity activity) {
+        View view = activity.getWindow().getDecorView();
         view.setDrawingCacheEnabled(true);
         view.buildDrawingCache();
         Bitmap bmp = view.getDrawingCache();
         Rect frame = new Rect();
-        ((Activity) mContext).getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
+        activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
         int statusBarHeight = frame.top;
   
-        int width = (int) getScreenWidth();
-        int height = (int) getScreenHeight();
+        int width = getScreenWidth(activity);
+        int height = getScreenHeight(activity);
         Bitmap bp = null;
         bp = Bitmap.createBitmap(bmp, 0, statusBarHeight, width, height - statusBarHeight);
         view.destroyDrawingCache();  
@@ -174,7 +298,7 @@ public class ScreenUtil {
      *
      * @return
      */
-    public double getScreenSize() {
+    public static double getScreenSize1(Activity activity) {
 //        double x = Math.pow(getScreenWidth(), 2);
 //        double y = Math.pow(getScreenHeight(), 2);
 //
@@ -183,12 +307,28 @@ public class ScreenUtil {
 //        return Math.sqrt(x + y) / displayMetrics.densityDpi;
 
         Point point = new Point();
-        ((Activity) mContext).getWindowManager().getDefaultDisplay().getRealSize(point);
-        DisplayMetrics dm = mContext.getResources().getDisplayMetrics();
+        activity.getWindowManager().getDefaultDisplay().getRealSize(point);
+        DisplayMetrics dm = activity.getResources().getDisplayMetrics();
         double x = Math.pow(point.x/ dm.xdpi, 2);
         double y = Math.pow(point.y / dm.ydpi, 2);
         double screenInches = Math.sqrt(x + y);
         return screenInches;
+    }
+
+    /**
+     * 计算屏幕宽度比例  (Mi3测试 3.375 )
+     * @return
+     */
+    public double getWidthRatio(Activity activity) {
+        return getScreenWidth(activity) / STANDARD_SCREEN_WIDTH;
+    }
+
+    /**
+     * 计算屏幕高度比例  (Mi3测试 4.0 )
+     * @return
+     */
+    public double getHeightRatio(Activity activity) {
+        return getScreenHeight(activity) / STANDARD_SCREEN_HEIGHT;
     }
     
 }
