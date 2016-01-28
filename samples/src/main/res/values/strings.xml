@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">UtilsDemo</string>
+    <string name="app_name"></string>UtilsDemo
     <string name="android_os_label">系统信息帮助类</string>
     <string name="cpu_info_label">CPU信息帮助类</string>
     <string name="application_label">应用信息帮助类</string>

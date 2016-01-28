@@ -31,5 +31,12 @@ public class ScreenActivity extends BaseActivity {
         addInfo("屏幕物理宽度尺寸：" + ScreenUtil.getWidthInch(this) + "英寸");
         addInfo("屏幕物理宽度尺寸：" + ScreenUtil.getHeightInch(this) + "英寸");
         addInfo("屏幕物理尺寸：" + ScreenUtil.getScreenInch(this) + "英寸");
+        addInfo("屏幕密度：" + ScreenUtil.getScreenDensity(this));
+        addInfo("屏幕DPI(PPI)：" + ScreenUtil.getDensityDpi(this));
+        addInfo("屏幕可操作区域宽度dp数目：" + ScreenUtil.getScreenWidthDp(this) + "dp");
+        addInfo("屏幕可操作区域高度dp数目：" + ScreenUtil.getScreenHeightDp(this) + "dp");
+        addInfo("屏幕真实宽度dp数目：" + ScreenUtil.getRealWidthDp(this) + "dp");
+        addInfo("屏幕真实高度dp数目：" + ScreenUtil.getRealHeightDp(this) + "dp");
+        addInfo("屏幕状态栏的高度：" + ScreenUtil.getStatusBarHeight(this) + "dp");
     }
 }
