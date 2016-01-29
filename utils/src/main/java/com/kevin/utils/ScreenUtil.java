@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 /**
  * 版权所有：XXX有限公司</br>
@@ -327,15 +328,15 @@ public class ScreenUtil {
      *
      * @return 
      */  
-    public Bitmap snapShotWithStatusBar(Activity activity) {
+    public static Bitmap snapShotWithStatusBar(Activity activity) {
         View view = activity.getWindow().getDecorView();
-        view.setDrawingCacheEnabled(true);  
+        view.setDrawingCacheEnabled(true);
         view.buildDrawingCache();
         Bitmap bmp = view.getDrawingCache();
         int width = getScreenWidth(activity);
         int height = getScreenHeight(activity);
         Bitmap bp = Bitmap.createBitmap(bmp, 0, 0, width, height);
-        view.destroyDrawingCache();  
+        view.destroyDrawingCache();
         return bp;
     }
     
@@ -344,7 +345,7 @@ public class ScreenUtil {
      *
      * @return 
      */  
-    public Bitmap snapShotWithoutStatusBar(Activity activity) {
+    public static Bitmap snapShotWithoutStatusBar(Activity activity) {
         View view = activity.getWindow().getDecorView();
         view.setDrawingCacheEnabled(true);
         view.buildDrawingCache();
